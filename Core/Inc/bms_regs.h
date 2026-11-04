@@ -5,8 +5,7 @@
  *      Author: luckyellasiri
  */
 
-#ifndef SRC_BMS_REG_H_
-#define SRC_BMS_REG_H_
+#pragma once
 
 // Abbreviations:
 // OTP - One-Time Programmable
@@ -78,7 +77,6 @@
 #define DIE_OT 0x4D             // configures die temperature threshold and hysteresis
 #define SELF_STS_REG 0x4E       // reports NVM CRC check outcome and over/under-voltage self-test detection results
 
-
 // Registers that deal with reading from regulation registers (just in case)
 #define RD_VA1P8_REG 0x4F   // reports the VDD regulator ADC reading result
 #define RD_VA3P3_REG 0x50   // reports the 3V3 regulator ADC reading result
@@ -129,7 +127,6 @@
 #define RD_3P3_REG 0x95     // reports the 3.3V regulator’s high-resolution ADC reading
 #define RD_V5_REG 0x96      // reports the 5V regulator’s high-resolution ADC reading
 
-
 // ADC error detection registers
 #define ADC_STS_REG 0x98    // reports the status of the internal scheduler
 #define ADC_CTRL 0x99       // reports whether an error has occurred when starting the HR voltage scan
@@ -158,8 +155,6 @@
 // MTP registers
 #define MEM_STATUS_REG 0xB4             // reports the status of the MTP
 #define OTP_STORE_CMD_REG 0xB8          // reports whether the store function is in progress
-#define STORE_CMD_ACCESS_CODE_REG 0xB9  //  controls the access to the store command
+#define STORE_CMD_ACCESS_CODE_REG 0xB9  // controls the access to the store command
 
 #define IC_ADDRESS 0x01
-
-#endif /* SRC_BMS_REG_H_ */
