@@ -105,6 +105,13 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 
+  // Initialize the BMS IC
+  HAL_StatusTypeDef init_status = BMS_Init(&hi2c1);
+
+  if (init_status != HAL_OK) {
+      // Handle initialization error
+      Error_Handler();
+  }
   /* USER CODE END 2 */
 
   /* Initialize led */

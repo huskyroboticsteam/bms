@@ -17,3 +17,5 @@ HAL_StatusTypeDef Read_CellVoltage(
     uint8_t cell,
     uint32_t* voltage_mV
 );
+
+HAL_StatusTypeDef BMS_Init(I2C_HandleTypeDef* hi2c);
