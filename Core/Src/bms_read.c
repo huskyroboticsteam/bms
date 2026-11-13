@@ -40,3 +40,23 @@ HAL_StatusTypeDef Read_RD_ITOP(I2C_HandleTypeDef* hi2c, int32_t* current_mA) {
    *current_mA = (int32_t)(((int64_t)data * 100000) / 32768 / RSENSE);
    return ret;
 }
+
+// Read an individual cell voltage (1-6) in millivolts
+HAL_StatusTypeDef Read_CellVoltage(
+    I2C_HandleTypeDef* hi2c,
+    uint8_t cell,
+    uint32_t* voltage_mV
+) {
+   // Check that the cell number is valid for a 65 battery
+   if (cell < 1 || cell > 6) return HAL_ERROR;
+
+   uint16_t raw;
+   uint16_t reg_addr = RD_VCELL1_REG + (cell - 1) * 2;
+   HAL_StatusTypeDef ret = Read_Uint16(hi2c, reg_addr, &raw);
+   if (ret != HAL_OK) return ret;
+
+   *voltage_mV = ((uint32_t)(raw & 0x7FFF) * 5000) / 32768;
+   
+   // Return successful read status
+   return HAL_OK;
+}

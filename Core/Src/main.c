@@ -23,6 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "bms_regs.h"
 #include "bms_types.h"
+#include "bms_read.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,6 +51,12 @@ I2C_HandleTypeDef hi2c1;
 // I2C RX and TX buffers
 uint8_t rx_buf[100];
 uint8_t tx_buf[100];
+
+// Stores the measured cell voltages in millivolts
+uint32_t cell_voltages_mV;
+
+// Stores the I2C read status
+HAL_StatusTypeDef status;
 
 /* USER CODE END PV */
 
@@ -120,11 +127,16 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1) {
-    FT_STS1_faults faults;
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+    // Read the voltage of cell 1
+    status = Read_CellVoltage(&hi2c1, 1, &cell_voltages_mV);
+
+    // Wait 1 second before reading again
+    HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }

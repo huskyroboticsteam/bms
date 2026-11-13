@@ -110,6 +110,14 @@
 #define RD_ICELL10_REG 0x7F  // reads current in cell 10
 #define TRIMG_IPCB_REG 0x9B  // configures PCB gain correction form sensing resistors and SMT variation
 
+// Cell voltage reading registers
+#define RD_VCELL1_REG 0x6C  // reports cell 1's high-resolution ADC voltage reading
+#define RD_VCELL2_REG 0x6E  // reports cell 2's high-resolution ADC voltage reading
+#define RD_VCELL3_REG 0x70  // reports cell 3's high-resolution ADC voltage reading
+#define RD_VCELL4_REG 0x72  // reports cell 4's high-resolution ADC voltage reading
+#define RD_VCELL5_REG 0x74  // reports cell 5's high-resolution ADC voltage reading
+#define RD_VCELL6_REG 0x76  // reports cell 6's high-resolution ADC voltage reading
+
 // NTC reading registers
 #define RD_VNTC4_REG 0x8C  // reports NTC 4’s high-resolution ADC reading
 #define RD_VNTC3_REG 0x8D  // reports NTC 3’s high-resolution ADC reading
