@@ -53,10 +53,10 @@ uint8_t rx_buf[100];
 uint8_t tx_buf[100];
 
 // Stores the measured cell voltages in millivolts
-uint32_t cell_voltages_mV;
+uint32_t cell_voltages_mV[6];
 
 // Stores the I2C read status
-HAL_StatusTypeDef status;
+HAL_StatusTypeDef voltage_status[6];
 
 /* USER CODE END PV */
 
@@ -132,9 +132,12 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-    // Read the voltage of cell 1
-    status = Read_CellVoltage(&hi2c1, 1, &cell_voltages_mV);
-
+    // Read all six cell voltages
+    for (uint8_t cell = 1; cell <= 6; cell++) {
+        voltage_status[cell - 1] =
+            Read_CellVoltage(&hi2c1, cell,
+                            &cell_voltages_mV[cell - 1]);
+    }
     // Wait 1 second before reading again
     HAL_Delay(1000);
   }

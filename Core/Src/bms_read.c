@@ -18,6 +18,25 @@ static HAL_StatusTypeDef Read_Uint16(I2C_HandleTypeDef* hi2c, uint16_t reg_addr,
    return HAL_OK;
 }
 
+// Write a 16-bit register
+static HAL_StatusTypeDef Write_Uint16(I2C_HandleTypeDef* hi2c, uint16_t reg_addr, uint16_t value) {
+   // Stores the two bytes to be transmitted
+   uint8_t data[2];
+
+   // Store the low byte first
+   data[0] = (uint8_t)(value & 0xFF);
+
+   // Store the high byte second
+   data[1] = (uint8_t)(value >> 8);
+
+   // Write the two bytes through I2C 
+   HAL_StatusTypeDef ret = HAL_I2C_Mem_Write(hi2c, IC_ADDRESS << 1, reg_addr, I2C_MEMADD_SIZE_8BIT, data, 2, 100);
+
+   // Return the I2C write status
+   return ret;
+}
+
+
 HAL_StatusTypeDef Read_FT_STS1(I2C_HandleTypeDef* hi2c, FT_STS1_faults* faults) {
    union {
       uint16_t raw;
