@@ -21,7 +21,7 @@
 // HR - high-resolution
 
 // General hardware/pin configuration registers
-#define CELL_CTRL_REG 0x00       // controls number of stacked cells being monitored
+#define CELLS_CTRL_REG 0x00       // controls number of stacked cells being monitored
 #define MOSFET_ACT_CFG_REG 0x05  // selects the possible commands of MOSFET transition logic
 #define GPIO_STATUS_REG 0x0A     // reports GPIO status (low/high)
 #define GPIO_CFG_REG 0x0C        // enables pull-up capability for GPIO pins, and defines direction and input type (OTP)

@@ -133,20 +133,24 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  HAL_StatusTypeDef ret;
   while (1) {
+    // Reset watchdog timer
+    ret = WDT_Reset(&hi2c1);
+    if (ret != HAL_OK) Error_Handler();
 
+    // Read all six cell voltages
+    for (uint8_t cell = 1; cell <= 6; cell++) {
+      voltage_status[cell - 1] = Read_CellVoltage(&hi2c1, cell, &cell_voltages_mV[cell - 1]);
+      // TODO: error handling
+    }
+
+    // Wait 50ms before repeating. Keep this much lower than watchdog timeout.
+    HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
-    // Read all six cell voltages
-    for (uint8_t cell = 1; cell <= 6; cell++) {
-        voltage_status[cell - 1] =
-            Read_CellVoltage(&hi2c1, cell,
-                            &cell_voltages_mV[cell - 1]);
-    }
-    // Wait 1 second before reading again
-    HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }

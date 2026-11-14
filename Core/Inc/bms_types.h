@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-typedef struct FT_STS1_faults {
+typedef struct FT_STS1_fields {
    uint16_t cell_uv : 1;
    uint16_t cell_ov : 1;
    uint16_t cell_dead : 1;

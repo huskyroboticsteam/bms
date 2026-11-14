@@ -18,4 +18,8 @@ HAL_StatusTypeDef Read_CellVoltage(
     uint32_t* voltage_mV
 );
 
+// Initialize the BMS IC
 HAL_StatusTypeDef BMS_Init(I2C_HandleTypeDef* hi2c);
+
+// Reset watchdog timer. Must be called periodically before it times out
+HAL_StatusTypeDef WDT_Reset(I2C_HandleTypeDef* hi2c);
