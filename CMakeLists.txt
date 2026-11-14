@@ -45,7 +45,8 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
-    Core/Src/bms_read.c
+    Core/Src/bms_rdwr.c
+    Core/Src/bms_init.c
 )
 
 # Add include paths

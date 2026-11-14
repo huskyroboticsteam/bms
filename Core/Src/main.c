@@ -23,7 +23,8 @@
 /* USER CODE BEGIN Includes */
 #include "bms_regs.h"
 #include "bms_types.h"
-#include "bms_read.h"
+#include "bms_rdwr.h"
+#include "bms_init.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
