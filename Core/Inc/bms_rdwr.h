@@ -12,11 +12,7 @@ HAL_StatusTypeDef Read_FT_STS1(I2C_HandleTypeDef* hi2c, FT_STS1_faults* faults);
 HAL_StatusTypeDef Read_RD_ITOP(I2C_HandleTypeDef* hi2c, int32_t* current_mA);
 
 // Reads the voltage of an individual cell (1-6) in millivolts
-HAL_StatusTypeDef Read_CellVoltage(
-    I2C_HandleTypeDef* hi2c,
-    uint8_t cell,
-    uint32_t* voltage_mV
-);
+HAL_StatusTypeDef Read_CellVoltage(I2C_HandleTypeDef* hi2c, uint8_t cell, uint32_t* voltage_mV);
 
 // Reset watchdog timer. Must be called periodically before it times out
 HAL_StatusTypeDef WDT_Reset(I2C_HandleTypeDef* hi2c);
