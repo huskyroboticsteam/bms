@@ -140,6 +140,16 @@ int main(void)
     ret = WDT_Reset(&hi2c1);
     if (ret != HAL_OK) Error_Handler();
 
+        ret = BMS_ScanCellVoltages(&hi2c1, 100);
+    if (ret != HAL_OK) {
+      // Mark every cell sample invalid when the scan fails.
+      for (uint8_t cell = 0; cell < 6; cell++) {
+        voltage_status[cell] = ret;
+      }
+      HAL_Delay(50);
+      continue;
+    }
+
     // Read all six cell voltages
     for (uint8_t cell = 1; cell <= 6; cell++) {
       voltage_status[cell - 1] = Read_CellVoltage(&hi2c1, cell, &cell_voltages_mV[cell - 1]);

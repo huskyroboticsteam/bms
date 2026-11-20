@@ -17,6 +17,9 @@ HAL_StatusTypeDef Read_FT_STS1(I2C_HandleTypeDef* hi2c, FT_STS1_faults* faults);
 // Read RD_ITOP register. Outputs the battery pack current in mA.
 HAL_StatusTypeDef Read_RD_ITOP(I2C_HandleTypeDef* hi2c, int32_t* current_mA);
 
+// Start a high-resolution voltage scan and poll for completion.
+HAL_StatusTypeDef BMS_ScanCellVoltages(I2C_HandleTypeDef* hi2c, uint32_t timeout_ms);
+
 // Reads the voltage of an individual cell (1-6) in millivolts
 HAL_StatusTypeDef Read_CellVoltage(I2C_HandleTypeDef* hi2c, uint8_t cell, uint32_t* voltage_mV);
 

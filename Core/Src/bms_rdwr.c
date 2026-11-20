@@ -57,6 +57,28 @@ HAL_StatusTypeDef Read_RD_ITOP(I2C_HandleTypeDef* hi2c, int32_t* current_mA) {
   *current_mA = (int32_t)(((int64_t)data * 100000) / 32768 / RSENSE);
   return ret;
 }
+// Start one high-resolution scan and wait for the selected channels.
+HAL_StatusTypeDef BMS_ScanCellVoltages(I2C_HandleTypeDef* hi2c, uint32_t timeout_ms) {
+  const uint16_t scan_go = 1U << 0;
+  const uint16_t scan_done = 1U << 1;
+  const uint16_t scan_error = 1U << 2;
+  uint16_t status;
+
+  HAL_StatusTypeDef ret = Write_Uint16(hi2c, ADC_CTRL, scan_go);
+  if (ret != HAL_OK) return ret;
+
+  uint32_t start_ms = HAL_GetTick();
+  do {
+    ret = Read_Uint16(hi2c, ADC_CTRL, &status);
+    if (ret != HAL_OK) return ret;
+    if (status & scan_error) return HAL_ERROR;
+    if (status & scan_done) return HAL_OK;
+
+    HAL_Delay(1);
+  } while (HAL_GetTick() - start_ms < timeout_ms);
+
+  return HAL_TIMEOUT;
+}
 
 // Read an individual cell voltage (1-6) in millivolts
 HAL_StatusTypeDef Read_CellVoltage(I2C_HandleTypeDef* hi2c, uint8_t cell, uint32_t* voltage_mV) {
