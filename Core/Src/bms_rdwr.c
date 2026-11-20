@@ -9,7 +9,7 @@
 #include "bms_types.h"
 
 // Read a 16-bit value from BMS IC
-static HAL_StatusTypeDef Read_Uint16(I2C_HandleTypeDef* hi2c, uint16_t reg_addr, uint16_t* out) {
+HAL_StatusTypeDef Read_Uint16(I2C_HandleTypeDef* hi2c, uint16_t reg_addr, uint16_t* out) {
   uint8_t data[2];
   HAL_StatusTypeDef ret = HAL_I2C_Mem_Read(hi2c, IC_ADDRESS << 1, reg_addr, I2C_MEMADD_SIZE_8BIT, data, 2, 100);
   if (ret != HAL_OK) return ret;
@@ -19,7 +19,7 @@ static HAL_StatusTypeDef Read_Uint16(I2C_HandleTypeDef* hi2c, uint16_t reg_addr,
 }
 
 // Write a 16-bit register
-static HAL_StatusTypeDef Write_Uint16(I2C_HandleTypeDef* hi2c, uint16_t reg_addr, uint16_t value) {
+HAL_StatusTypeDef Write_Uint16(I2C_HandleTypeDef* hi2c, uint16_t reg_addr, uint16_t value) {
   // Stores the two bytes to be transmitted
   uint8_t data[2];
 

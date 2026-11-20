@@ -1,6 +1,7 @@
 #include "stm32g4xx_hal.h"
 
 #include "bms_init.h"
+#include "bms_rdwr.h"
 #include "bms_regs.h"
 
 HAL_StatusTypeDef BMS_Init(I2C_HandleTypeDef* hi2c) {
