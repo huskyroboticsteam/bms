@@ -165,7 +165,9 @@
 #define OTP_STORE_CMD_REG 0xB8          // reports whether the store function is in progress
 #define STORE_CMD_ACCESS_CODE_REG 0xB9  // controls the access to the store command
 
+// Undervoltage
 #define CELL_UV_REG 0x38  // configures the cell undervoltage threshold 
+#define CELL_HYST 0x36  // configures the cell undervoltage (and overvoltage) hysteresis
 
 #define IC_ADDRESS 0x01
 
