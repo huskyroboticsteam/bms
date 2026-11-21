@@ -21,7 +21,7 @@ static HAL_StatusTypeDef Config_Watchdog(I2C_HandleTypeDef* hi2c) {
   return Write_Uint16(hi2c, WDT_CFG_REG, cfg);
 }
 
-static HAL_StatusTypeDef Config_Undervoltage(I2C_HandleTypeDef* hi2c) {
+static HAL_StatusTypeDef Config_UV(I2C_HandleTypeDef* hi2c) {
   uint16_t cfg = 0;
 
   cfg |= 0b10011010; // UV threshold: 3008 mV
@@ -30,7 +30,7 @@ static HAL_StatusTypeDef Config_Undervoltage(I2C_HandleTypeDef* hi2c) {
   return Write_Uint16(hi2c, CELL_UV_REG, cfg);
 }
 
-static HAL_StatusTypeDef Config_Hysteresis(I2C_HandleTypeDef* hi2c) {
+static HAL_StatusTypeDef Config_UV_Hysteresis(I2C_HandleTypeDef* hi2c) {
   uint16_t cfg = 0;
 
   cfg |= 0x8 << 4;  // UV hysteresis: 156 mV
@@ -47,10 +47,10 @@ HAL_StatusTypeDef BMS_Init(I2C_HandleTypeDef* hi2c) {
   ret = Config_Watchdog(hi2c);
   if (ret != HAL_OK) return ret;
 
-  ret = Config_Undervoltage(hi2c);
+  ret = Config_UV(hi2c);
   if (ret != HAL_OK) return ret;
 
-  ret = Config_Hysteresis(hi2c);
+  ret = Config_UV_Hysteresis(hi2c);
   if (ret != HAL_OK) return ret;
 
 
