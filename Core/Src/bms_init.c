@@ -45,6 +45,15 @@ static HAL_StatusTypeDef Enable_UV(I2C_HandleTypeDef* hi2c) {
   return Write_Uint16(hi2c, CELLFT_CTRL, cfg);
 }
 
+static HAL_StatusTypeDef Config_UV_Handling(I2C_HandleTypeDef* hi2c) {
+  uint16_t cfg = 0;
+
+  cfg |= 1U << 7;    // automatic recovery for cell undervoltage
+  cfg |= 0b01 << 4;  // keep defaults for recovery logic
+
+  return Write_Uint16(hi2c, FT0_CFG_REG, cfg);
+}
+
 HAL_StatusTypeDef BMS_Init(I2C_HandleTypeDef* hi2c) {
   HAL_StatusTypeDef ret;
 
@@ -62,6 +71,10 @@ HAL_StatusTypeDef BMS_Init(I2C_HandleTypeDef* hi2c) {
 
   ret = Enable_UV(hi2c);
   if (ret != HAL_OK) return ret;
+
+  ret = Config_UV_Handling(hi2c);
+  if (ret != HAL_OK) return ret;
+
 
 
 
