@@ -24,18 +24,25 @@ static HAL_StatusTypeDef Config_Watchdog(I2C_HandleTypeDef* hi2c) {
 static HAL_StatusTypeDef Config_UV(I2C_HandleTypeDef* hi2c) {
   uint16_t cfg = 0;
 
-  cfg |= 0b10011010; // UV threshold: 3008 mV
-  cfg |= 0xF << 8;   // deglitch: 16 protection cycles (highest delay)
+  cfg |= 0b10011010;  // undervoltage threshold: 3008 mV
+  cfg |= 0xF << 8;    // deglitch: 16 protection cycles (highest delay)
 
   return Write_Uint16(hi2c, CELL_UV_REG, cfg);
 }
 
 static HAL_StatusTypeDef Config_UV_Hysteresis(I2C_HandleTypeDef* hi2c) {
   uint16_t cfg = 0;
-
   cfg |= 0x8 << 4;  // UV hysteresis: 156 mV
-
   return Write_Uint16(hi2c, CELL_HYST, cfg);
+}
+
+static HAL_StatusTypeDef Enable_UV(I2C_HandleTypeDef* hi2c) {
+  uint16_t cfg = 0;  // disable OV protection
+
+  cfg |= 0b01 << 7;  // CELL_UV_INT_TYPE: interrupt on rising edge
+  cfg |= 0b110;      // CELL_UV_FAULT_EN & CELL_UV_EN_CTRL: enable protection
+
+  return Write_Uint16(hi2c, CELLFT_CTRL, cfg);
 }
 
 HAL_StatusTypeDef BMS_Init(I2C_HandleTypeDef* hi2c) {
@@ -51,6 +58,9 @@ HAL_StatusTypeDef BMS_Init(I2C_HandleTypeDef* hi2c) {
   if (ret != HAL_OK) return ret;
 
   ret = Config_UV_Hysteresis(hi2c);
+  if (ret != HAL_OK) return ret;
+
+  ret = Enable_UV(hi2c);
   if (ret != HAL_OK) return ret;
 
 

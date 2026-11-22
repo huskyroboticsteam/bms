@@ -167,7 +167,8 @@
 
 // Undervoltage
 #define CELL_UV_REG 0x38  // configures the cell undervoltage threshold 
-#define CELL_HYST 0x36  // configures the cell undervoltage (and overvoltage) hysteresis
+#define CELL_HYST 0x36    // configures the cell undervoltage (and overvoltage) hysteresis
+#define CELLFT_CTRL 0x35  // enables monitoring and fault protection for cell OV and UV
 
 #define IC_ADDRESS 0x01
 
