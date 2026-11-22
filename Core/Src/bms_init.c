@@ -9,19 +9,19 @@ static HAL_StatusTypeDef Config_Cell_Count(I2C_HandleTypeDef* hi2c) {
   return Write_Uint16(hi2c, CELLS_CTRL_REG, 0x0005);
 }
 
-static HAL_StatusTypeDef Config_Watchdog(I2C_HandleTypeDef* hi2c) {
+static HAL_StatusTypeDef Enable_Watchdog(I2C_HandleTypeDef* hi2c) {
   uint16_t cfg = 0;
 
   // set timeouts (setting * 25 + 25)
   cfg |= 0b0100111 << 9;  // bite timeout: 1000 ms
   cfg |= 0b0010011 << 2;  // bark timeout: 500 ms
 
-  cfg |= 0b1;  // enable timeouts
+  cfg |= 0b1;  // enable watchdog
 
   return Write_Uint16(hi2c, WDT_CFG_REG, cfg);
 }
 
-static HAL_StatusTypeDef Config_UV(I2C_HandleTypeDef* hi2c) {
+static HAL_StatusTypeDef Config_UV_Threshold(I2C_HandleTypeDef* hi2c) {
   uint16_t cfg = 0;
 
   cfg |= 0b10011010;  // undervoltage threshold: 3008 mV
@@ -60,24 +60,25 @@ HAL_StatusTypeDef BMS_Init(I2C_HandleTypeDef* hi2c) {
   ret = Config_Cell_Count(hi2c);
   if (ret != HAL_OK) return ret;
 
-  ret = Config_Watchdog(hi2c);
+  ret = Config_UV_Threshold(hi2c);
   if (ret != HAL_OK) return ret;
-
-  ret = Config_UV(hi2c);
-  if (ret != HAL_OK) return ret;
-
+  
   ret = Config_UV_Hysteresis(hi2c);
   if (ret != HAL_OK) return ret;
   
   ret = Config_UV_Handling(hi2c);
   if (ret != HAL_OK) return ret;
-
+  
   ret = Enable_UV(hi2c);
   if (ret != HAL_OK) return ret;
+  
+  
 
 
-
-
+  
+  
+  ret = Enable_Watchdog(hi2c);
+  if (ret != HAL_OK) return ret;
 
   // Enable ADC scans for cells 1-6
   ret = Write_Uint16(hi2c, HR_SCAN1_REG, 0x003F);
