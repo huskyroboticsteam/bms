@@ -59,6 +59,10 @@ uint32_t cell_voltages_mV[6];
 // Stores the I2C read status
 HAL_StatusTypeDef voltage_status[6];
 
+HAL_StatusTypeDef last_scan_status;
+uint32_t scan_failure_count;
+uint32_t cell_read_failure_count[6];
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -140,11 +144,13 @@ int main(void)
     ret = WDT_Reset(&hi2c1);
     if (ret != HAL_OK) Error_Handler();
 
-        ret = BMS_ScanCellVoltages(&hi2c1, 100);
-    if (ret != HAL_OK) {
+    last_scan_status = BMS_ScanCellVoltages(&hi2c1, 100);
+    if (last_scan_status != HAL_OK) {
+      scan_failure_count++;
+
       // Mark every cell sample invalid when the scan fails.
       for (uint8_t cell = 0; cell < 6; cell++) {
-        voltage_status[cell] = ret;
+        voltage_status[cell] = last_scan_status;
       }
       HAL_Delay(50);
       continue;
@@ -154,6 +160,9 @@ int main(void)
     for (uint8_t cell = 1; cell <= 6; cell++) {
       voltage_status[cell - 1] = Read_CellVoltage(&hi2c1, cell, &cell_voltages_mV[cell - 1]);
       // TODO: error handling
+      if (voltage_status[cell - 1] != HAL_OK) {
+        cell_read_failure_count[cell - 1]++;
+      }
     }
 
     // Wait 50ms before repeating. Keep this much lower than watchdog timeout.
