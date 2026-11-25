@@ -63,6 +63,10 @@ HAL_StatusTypeDef last_scan_status;
 uint32_t scan_failure_count;
 uint32_t cell_read_failure_count[6];
 
+// Stores the last read fault flags and the status of the read operation
+FT_STS1_faults last_fault_flags;
+HAL_StatusTypeDef last_fault_read_status = HAL_ERROR;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -139,10 +143,18 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   HAL_StatusTypeDef ret;
+  uint32_t last_fault_poll_ms = HAL_GetTick();
+
   while (1) {
     // Reset watchdog timer
     ret = WDT_Reset(&hi2c1);
     if (ret != HAL_OK) Error_Handler();
+
+    uint32_t now_ms = HAL_GetTick();
+    if (now_ms - last_fault_poll_ms >= 1000U) {
+      last_fault_poll_ms = now_ms;
+      last_fault_read_status = Read_FT_STS1(&hi2c1, &last_fault_flags);
+    }
 
     last_scan_status = BMS_ScanCellVoltages(&hi2c1, 100);
     if (last_scan_status != HAL_OK) {
