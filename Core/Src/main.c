@@ -21,6 +21,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include <stdbool.h>
 #include "bms_regs.h"
 #include "bms_types.h"
 #include "bms_rdwr.h"
@@ -151,14 +153,27 @@ int main(void)
     if (ret != HAL_OK) Error_Handler();
 
     uint32_t now_ms = HAL_GetTick();
-    if (now_ms - last_fault_poll_ms >= 1000U) {
+    const bool report_due = now_ms - last_fault_poll_ms >= 1000U;
+    if (report_due) {
       last_fault_poll_ms = now_ms;
       last_fault_read_status = Read_FT_STS1(&hi2c1, &last_fault_flags);
+      if (last_fault_read_status != HAL_OK) {
+        // Handle error reading fault flags
+        printf("BMS: fault status read failed\r\n");
+      } else if (last_fault_flags.cell_uv) {
+        printf("BMS: cell undervoltage fault\r\n");
+      } else {
+        printf("BMS: no cell undervoltage fault reported\r\n");
+      }
     }
 
     last_scan_status = BMS_ScanCellVoltages(&hi2c1, 100);
     if (last_scan_status != HAL_OK) {
       scan_failure_count++;
+
+      if (report_due) {
+        printf("BMS: cell voltage scan failed\r\n");
+      }
 
       // Mark every cell sample invalid when the scan fails.
       for (uint8_t cell = 0; cell < 6; cell++) {
@@ -175,6 +190,18 @@ int main(void)
       if (voltage_status[cell - 1] != HAL_OK) {
         cell_read_failure_count[cell - 1]++;
       }
+    }
+
+    if (report_due) {
+      printf("BMS: cell voltages (mV): ");
+      for (uint8_t cell = 0; cell < 6; cell++) {
+        if (voltage_status[cell] == HAL_OK) {
+          printf("%lu ", (unsigned long)cell_voltages_mV[cell]);
+        } else {
+          printf(" ERR");
+        }
+      }
+      printf("\r\n");
     }
 
     // Wait 50ms before repeating. Keep this much lower than watchdog timeout.
